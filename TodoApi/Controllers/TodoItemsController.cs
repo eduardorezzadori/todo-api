@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TodoApi.Models;
+using TodoApi.Validators;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -27,7 +28,7 @@ public class TodoItemsController : ControllerBase
 
         if (todoitem == null)
         {
-            return NotFound();
+            return NotFound(new { message = "Todo item not found" });
         }
 
         return todoitem;
@@ -69,10 +70,17 @@ public class TodoItemsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<TodoItemDTO>> PostTodoItem(TodoItemDTO todoitem)
     {
+        CreateTodoItemUseCase validator = new CreateTodoItemUseCase();
+
+        var validatorResult = validator.Validate(todoitem);
+        if (!validatorResult.IsValid)
+        {
+            return BadRequest(validatorResult.Errors);
+        }
+
         _context.TodoItems.Add(todoitem);
         await _context.SaveChangesAsync();
 
-        //return CreatedAtAction("GetTodoItem", new { id = todoitem.Id }, todoitem);
         return CreatedAtAction(nameof(GetTodoItem), new { id = todoitem.Id }, todoitem);
     }
 
