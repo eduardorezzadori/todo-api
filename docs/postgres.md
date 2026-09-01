@@ -57,6 +57,13 @@ dotnet ef migrations add InitialCreate
 dotnet ef database update
 ```
 
+No meu caso, precisei deixar explicito o projeto: 
+
+``` shell
+dotnet ef migrations add InitialCreate --project .\TodoApi\TodoApi.csproj --startup-project .\TodoApi\TodoApi.csproj
+dotnet ef database update --project .\TodoApi\TodoApi.csproj
+``` 
+
 ## Criando o usuário da API
 
 ### Porque criar um usuário para a API?
