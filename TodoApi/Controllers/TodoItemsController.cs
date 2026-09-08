@@ -1,6 +1,8 @@
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TodoApi.Models;
+using TodoApi.Resources;
 using TodoApi.Validators;
 
 [Route("api/[controller]")]
@@ -37,14 +39,30 @@ public class TodoItemsController : ControllerBase
     // PUT: api/TodoItem/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutTodoItem(long? id, TodoItemDTO todoitem)
+    public async Task<IActionResult> PutTodoItem(long? id, UpdateTodoItemDTO todoitem)
     {
-        if (id != todoitem.Id)
+        var existing = await _context.TodoItems.FindAsync(id);
+        if (existing == null)
         {
-            return BadRequest();
+            return NotFound();
         }
 
-        _context.Entry(todoitem).State = EntityState.Modified; 
+        if (!todoitem.IsComplete.HasValue)
+        {
+            return BadRequest(new { message = ResourceMessages.ISCOMPLETE_REQUIRED});
+        }
+
+        // apply updates from the incoming DTO to the existing TodoItemDTO
+        todoitem.Adapt(existing);
+
+        UpdateTodoItemUseCase validator = new UpdateTodoItemUseCase();
+
+        // validate the TodoItemDTO instance expected by the validator
+        var validatorResult = validator.Validate(existing);
+        if (!validatorResult.IsValid)
+        {
+            return BadRequest(validatorResult.Errors);
+        }
 
         try
         {

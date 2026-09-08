@@ -2,16 +2,18 @@
 
 using FluentValidation;
 using TodoApi.Models;
+using TodoApi.Resources;
 
 public class CreateTodoItemUseCase : AbstractValidator<TodoItemDTO>
 {
     public CreateTodoItemUseCase()
     {
         RuleFor(x => x.Name)
-            .NotEmpty().WithMessage("IsComplete is required.")
-            .MinimumLength(3).WithMessage("Name must have three or more characters.");
+            .NotEmpty().WithMessage(ResourceMessages.NAME_REQUIRED)
+            .MinimumLength(3).WithMessage(ResourceMessages.NAME_MINIMUM_LENGTH)
+            .MaximumLength(100).WithMessage(ResourceMessages.NAME_MAXIMUM_LENGTH);
 
         RuleFor(x => x.IsComplete)
-            .NotNull().WithMessage("IsComplete is required.");
+            .NotNull().WithMessage(ResourceMessages.ISCOMPLETE_REQUIRED);
     }
 }

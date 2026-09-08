@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="12.1.1" />
+    <PackageReference Include="Mapster" Version="10.0.12" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.11" />
@@ -15,6 +16,21 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\ResourceMessages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ResourceMessages.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\ResourceMessages.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ResourceMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
