@@ -12,3 +12,8 @@ Esse projeto tem o objetivo exclusivo de mostrar a minha evolução no aprendiza
 
 **Objetivo:** Customizar o retorno em caso de exceção no código \
 **Branch Name:** feat/implement-fluent-validation
+
+## 2. PostgreSQL
+
+**Objetivo:** Utilizar o banco postgres para persistencia dos dados \
+**Branch Name:** feat/implement_relational_db
