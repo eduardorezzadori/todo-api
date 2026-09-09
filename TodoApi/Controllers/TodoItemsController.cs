@@ -30,7 +30,7 @@ public class TodoItemsController : ControllerBase
 
         if (todoitem == null)
         {
-            return NotFound(new { message = "Todo item not found" });
+            return NotFound(new { message = ResourceMessages.TODO_NOT_FOUND });
         }
 
         return todoitem;
@@ -49,7 +49,7 @@ public class TodoItemsController : ControllerBase
 
         if (!todoitem.IsComplete.HasValue)
         {
-            return BadRequest(new { message = ResourceMessages.ISCOMPLETE_REQUIRED});
+            return BadRequest(new { message = ResourceMessages.ISCOMPLETE_REQUIRED });
         }
 
         // apply updates from the incoming DTO to the existing TodoItemDTO

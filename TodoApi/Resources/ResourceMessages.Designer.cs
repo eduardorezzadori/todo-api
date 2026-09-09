@@ -95,5 +95,14 @@ namespace TodoApi.Resources {
                 return ResourceManager.GetString("NAME_REQUIRED", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Todo item not found.
+        /// </summary>
+        public static string TODO_NOT_FOUND {
+            get {
+                return ResourceManager.GetString("TODO_NOT_FOUND", resourceCulture);
+            }
+        }
     }
 }
