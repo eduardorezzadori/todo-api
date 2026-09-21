@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TodoApi.Models;
 using TodoApi.Resources;
+using TodoApi.Services;
 using TodoApi.Validators;
 
 [Route("api/[controller]")]
@@ -10,23 +11,26 @@ using TodoApi.Validators;
 public class TodoItemsController : ControllerBase
 {
     private readonly TodoContext _context;
-    public TodoItemsController(TodoContext context)
+    private readonly TodoService _service;
+    public TodoItemsController(TodoContext context, TodoService service)
     {
         _context = context;
+        _service = service;
     }
 
     // GET: api/TodoItem
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TodoItemDTO>>> GetTodoItem()
     {
-        return await _context.TodoItems.ToListAsync();
+        var todoItems = await _service.GetAllTodoItemsAsync();
+        return Ok(todoItems);
     }
 
     // GET: api/TodoItem/5
     [HttpGet("{id}")]
     public async Task<ActionResult<TodoItemDTO>> GetTodoItem(long id)
     {
-        var todoitem = await _context.TodoItems.FindAsync(id);
+        var todoitem = await _service.GetTodoItemAsync(id);
 
         if (todoitem == null)
         {
@@ -88,18 +92,9 @@ public class TodoItemsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<TodoItemDTO>> PostTodoItem(TodoItemDTO todoitem)
     {
-        CreateTodoItemUseCase validator = new CreateTodoItemUseCase();
+        var createdTodoItem = await _service.CreateAsync(todoitem);
 
-        var validatorResult = validator.Validate(todoitem);
-        if (!validatorResult.IsValid)
-        {
-            return BadRequest(validatorResult.Errors);
-        }
-
-        _context.TodoItems.Add(todoitem);
-        await _context.SaveChangesAsync();
-
-        return CreatedAtAction(nameof(GetTodoItem), new { id = todoitem.Id }, todoitem);
+        return CreatedAtAction(nameof(GetTodoItem), new { id = createdTodoItem.Id }, createdTodoItem);
     }
 
     // DELETE: api/TodoItem/5
