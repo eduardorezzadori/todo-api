@@ -47,17 +47,21 @@ public class TodoService
         return todoDTO;
     }
 
-    public async Task<TodoItemDTO> CreateAsync(TodoItemDTO todoitem)
+    public async Task<bool> DeleteAsync(long? id)
     {
-
-        var validatorResult = _validator.Validate(todoitem);
-
-        if (!validatorResult.IsValid)
+        var todoitem = await _repository.GetByIdAsync(id);
+        if (todoitem == null)
         {
-            //throw new ValidationException(validatorResult.Errors);
-            throw new ValidationException("Um ou mais campos inválidos");
+            return false;
         }
 
+        var deleteResult = await _repository.RemoveAsync(todoitem);
+
+        return deleteResult;
+    }
+
+    public async Task<TodoItemDTO> CreateAsync(TodoItemDTO todoitem)
+    {
         return await _repository.AddAsync(todoitem);
     }
 }

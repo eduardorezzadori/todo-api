@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography.X509Certificates;
 using TodoApi.Models;
 
 namespace TodoApi.Repository;
@@ -17,7 +18,7 @@ public class TodoRepository
         return await _context.TodoItems.ToListAsync();
     }
 
-    public async Task<TodoItemDTO?> GetByIdAsync(long id)
+    public async Task<TodoItemDTO?> GetByIdAsync(long? id)
     {
         return await _context.TodoItems.FindAsync(id);
     }
@@ -28,4 +29,12 @@ public class TodoRepository
         await _context.SaveChangesAsync();
         return todoitem;
     }
+    
+    public async Task<bool> RemoveAsync(TodoItemDTO todoitem)
+    {
+        _context.TodoItems.Remove(todoitem);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
 }

@@ -74,14 +74,7 @@ public class TodoItemsController : ControllerBase
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!TodoItemExists(id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
+            throw;
         }
 
         return NoContent();
@@ -92,6 +85,15 @@ public class TodoItemsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<TodoItemDTO>> PostTodoItem(TodoItemDTO todoitem)
     {
+        CreateTodoItemUseCase validator = new CreateTodoItemUseCase();
+
+        var validatorResult = validator.Validate(todoitem);
+
+        if (!validatorResult.IsValid)
+        {
+            return BadRequest(validatorResult.Errors);
+        }
+
         var createdTodoItem = await _service.CreateAsync(todoitem);
 
         return CreatedAtAction(nameof(GetTodoItem), new { id = createdTodoItem.Id }, createdTodoItem);
@@ -101,20 +103,14 @@ public class TodoItemsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteTodoItem(long? id)
     {
-        var todoitem = await _context.TodoItems.FindAsync(id);
-        if (todoitem == null)
-        {
-            return NotFound();
-        }
+        var deleteResult = await _service.DeleteAsync(id);
 
-        _context.TodoItems.Remove(todoitem);
-        await _context.SaveChangesAsync();
+        if (deleteResult == false)
+        {
+            NotFound(new { message = ResourceMessages.TODO_NOT_FOUND });
+        }
 
         return NoContent();
     }
 
-    private bool TodoItemExists(long? id)
-    {
-        return _context.TodoItems.Any(e => e.Id == id);
-    }
 }
