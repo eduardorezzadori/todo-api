@@ -17,3 +17,8 @@ Esse projeto tem o objetivo exclusivo de mostrar a minha evolução no aprendiza
 
 **Objetivo:** Utilizar o banco postgres para persistencia dos dados \
 **Branch Name:** feat/implement_relational_db
+
+## 3. Criar a entidade Usuário
+
+**Objetivo:** Criar a entidade e a relação usuário-tarefa \
+**Branch Name:** feat/create_user_entity

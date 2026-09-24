@@ -1,7 +1,7 @@
 ﻿namespace TodoApi.Validators;
 
 using FluentValidation;
-using TodoApi.Models;
+using TodoApi.DTOs;
 using TodoApi.Resources;
 
 public class CreateTodoItemUseCase : AbstractValidator<TodoItemDTO>
