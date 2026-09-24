@@ -1,35 +1,33 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using TodoApi.DTOs;
 using TodoApi.Models;
 using TodoApi.Repository;
-using TodoApi.Validators;
 
 namespace TodoApi.Services;
 
 public class TodoService
 {
     private readonly TodoRepository _repository;
-    private readonly CreateTodoItemUseCase _validator;
 
-    public TodoService(TodoRepository repository, CreateTodoItemUseCase validator)
+    public TodoService(TodoRepository repository)
     {
         _repository = repository;
-        _validator = validator;
     }
 
     public async Task<IEnumerable<TodoItemDTO>> GetAllTodoItemsAsync()
     {
-        //return await _repository.GetAllAsync();
+        
         var todos = await _repository.GetAllAsync();
         var todoDTOs = todos.Select(todo => new TodoItemDTO
         {
             Id = todo.Id,
             Name = todo.Name,
-            IsComplete = todo.IsComplete
+            IsComplete = todo.IsComplete,
+            UserId = todo.UserId
         });
         return todoDTOs;
     }
 
-    public async Task<TodoItemDTO?> GetTodoItemAsync(long id)
+    public async Task<TodoItemDTO?> GetTodoItemAsync(Guid? id)
     {
         var todo = await _repository.GetByIdAsync(id);
         TodoItemDTO? todoDTO = null;
@@ -40,14 +38,15 @@ public class TodoService
             {
                 Id = todo.Id,
                 Name = todo.Name,
-                IsComplete = todo.IsComplete
+                IsComplete = todo.IsComplete,
+                UserId = todo.UserId
             };
         }
 
         return todoDTO;
     }
 
-    public async Task<bool> DeleteAsync(long? id)
+    public async Task<bool> DeleteAsync(Guid? id)
     {
         var todoitem = await _repository.GetByIdAsync(id);
         if (todoitem == null)
@@ -63,5 +62,17 @@ public class TodoService
     public async Task<TodoItemDTO> CreateAsync(TodoItemDTO todoitem)
     {
         return await _repository.AddAsync(todoitem);
+    }
+
+    public async Task<TodoItemDTO?> UpdateAsync(Guid? id, UpdateTodoItemDTO todoitem)
+    {
+        var existingTodo = await _repository.GetByIdAsync(id);
+        if (existingTodo == null)
+        {
+            return null;
+        }
+        
+        var updatedTodo = await _repository.UpdateAsync(id, todoitem);
+        return existingTodo;
     }
 }

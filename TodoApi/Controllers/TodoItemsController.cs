@@ -1,6 +1,6 @@
-using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TodoApi.DTOs;
 using TodoApi.Models;
 using TodoApi.Resources;
 using TodoApi.Services;
@@ -10,11 +10,9 @@ using TodoApi.Validators;
 [ApiController]
 public class TodoItemsController : ControllerBase
 {
-    private readonly TodoContext _context;
     private readonly TodoService _service;
-    public TodoItemsController(TodoContext context, TodoService service)
+    public TodoItemsController(TodoService service)
     {
-        _context = context;
         _service = service;
     }
 
@@ -28,7 +26,7 @@ public class TodoItemsController : ControllerBase
 
     // GET: api/TodoItem/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<TodoItemDTO>> GetTodoItem(long id)
+    public async Task<ActionResult<TodoItemDTO>> GetTodoItem(Guid id)
     {
         var todoitem = await _service.GetTodoItemAsync(id);
 
@@ -43,41 +41,19 @@ public class TodoItemsController : ControllerBase
     // PUT: api/TodoItem/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutTodoItem(long? id, UpdateTodoItemDTO todoitem)
+    public async Task<IActionResult> PutTodoItem(Guid? id, UpdateTodoItemDTO todoitem)
     {
-        var existing = await _context.TodoItems.FindAsync(id);
-        if (existing == null)
-        {
-            return NotFound();
-        }
-
-        if (!todoitem.IsComplete.HasValue)
-        {
-            return BadRequest(new { message = ResourceMessages.ISCOMPLETE_REQUIRED });
-        }
-
-        // apply updates from the incoming DTO to the existing TodoItemDTO
-        todoitem.Adapt(existing);
-
-        UpdateTodoItemUseCase validator = new UpdateTodoItemUseCase();
-
-        // validate the TodoItemDTO instance expected by the validator
-        var validatorResult = validator.Validate(existing);
-        if (!validatorResult.IsValid)
-        {
-            return BadRequest(validatorResult.Errors);
-        }
-
         try
         {
-            await _context.SaveChangesAsync();
+            await _service.UpdateAsync(id, todoitem);
+            return NoContent();
+
         }
         catch (DbUpdateConcurrencyException)
         {
             throw;
         }
 
-        return NoContent();
     }
 
     // POST: api/TodoItem
@@ -101,7 +77,7 @@ public class TodoItemsController : ControllerBase
 
     // DELETE: api/TodoItem/5
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteTodoItem(long? id)
+    public async Task<IActionResult> DeleteTodoItem(Guid? id)
     {
         var deleteResult = await _service.DeleteAsync(id);
 
