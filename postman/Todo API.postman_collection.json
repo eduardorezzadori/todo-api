@@ -47,14 +47,10 @@
         {
           "listen": "test",
           "script": {
-            "exec": [
-              "pm.test(\"Status code is 200\", function () {",
-              "    pm.response.to.have.status(200);",
-              "});"
-            ],
             "type": "text/javascript",
-            "packages": {},
-            "requests": {}
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});"
+            ]
           }
         }
       ],
@@ -74,7 +70,7 @@
           "variable": [
             {
               "key": "id",
-              "value": "1"
+              "value": "01a0cf81-d4c8-7507-97dc-97675225f07a"
             }
           ]
         },
@@ -88,15 +84,10 @@
         {
           "listen": "test",
           "script": {
-            "exec": [
-              "pm.test(\"Successful POST request\", function () {",
-              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
-              "});",
-              ""
-            ],
             "type": "text/javascript",
-            "packages": {},
-            "requests": {}
+            "exec": [
+              "pm.test(\"Successful POST request\", function () {\n    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\n});\n"
+            ]
           }
         }
       ],
@@ -105,7 +96,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\n\t\"name\": \"Task 1\",\n    \"isComplete\": false\n}",
+          "raw": "{\n\t\"name\": \"Task 3\",\n    \"isComplete\": false,\n    \"userId\": \"01a0cf81-6005-7d9f-af83-16923acebae6\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -132,15 +123,10 @@
         {
           "listen": "test",
           "script": {
-            "exec": [
-              "pm.test(\"Successful POST request\", function () {",
-              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
-              "});",
-              ""
-            ],
             "type": "text/javascript",
-            "packages": {},
-            "requests": {}
+            "exec": [
+              "\n"
+            ]
           }
         }
       ],
@@ -149,7 +135,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"id\": 1,\n\t\"name\": \"Task 1\",\n    \"isComplete\": true\n}",
+          "raw": "{\n    \"name\": \"Updated 1\",\n    \"isComplete\": true,\n    \"userId\": \"01a0cf81-6005-7d9f-af83-16923acebae6\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -169,7 +155,7 @@
           "variable": [
             {
               "key": "id",
-              "value": "1"
+              "value": "01a0cf81-d4c8-7507-97dc-97675225f07a"
             }
           ]
         },
@@ -183,15 +169,10 @@
         {
           "listen": "test",
           "script": {
-            "exec": [
-              "pm.test(\"Successful POST request\", function () {",
-              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
-              "});",
-              ""
-            ],
             "type": "text/javascript",
-            "packages": {},
-            "requests": {}
+            "exec": [
+              "\n"
+            ]
           }
         }
       ],
@@ -220,11 +201,56 @@
           "variable": [
             {
               "key": "id",
-              "value": "1"
+              "value": "01a0cf82-a2c1-7099-b0b6-e193e319c279"
             }
           ]
         },
         "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+      },
+      "response": []
+    },
+    {
+      "name": "CreateUser",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\": \"Eduardo\",\r\n    \"email\": \"eduardo@email.com\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/users",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Users",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/users",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "users"
+          ]
+        }
       },
       "response": []
     }
